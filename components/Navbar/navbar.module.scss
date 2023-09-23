@@ -1,0 +1,68 @@
+
+
+.navbar{
+    background-image: linear-gradient(to right, var(--dark2), var(--dark2), var(--dark), var(--dark2));
+    color: var(--light);
+    border-bottom: solid 2px var;
+    a, span, p{
+        color: var(--light-blue);
+        text-decoration: none;
+
+        &:hover{
+            color: white;
+        }
+    }
+
+    ul{
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        
+    }
+}
+
+
+/* CSS */
+.loginBtn {
+  appearance: button;
+  background-color: transparent;
+  background-image: linear-gradient(to bottom, #fff, #f8eedb);
+  border: 1px solid #e5e7eb;
+  border-radius: .5rem;
+  box-sizing: border-box;
+  color: var(--dark2) !important;
+  column-gap: 0.4rem;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  font-size: 100%;
+  font-weight: 700;
+  line-height: 24px;
+  margin: 0;
+  outline: 2px solid transparent;
+  padding: 0.25rem 0.8rem;
+  text-align: center;
+  text-transform: none;
+  transition: all .1s cubic-bezier(.4, 0, .2, 1);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  box-shadow: -6px 8px 10px rgba(81,41,10,0.1),0px 2px 2px rgba(81,41,10,0.2);
+  -webkit-transition: all .1s cubic-bezier(.4, 0, .2, 1);
+  -moz-transition: all .1s cubic-bezier(.4, 0, .2, 1);
+  -ms-transition: all .1s cubic-bezier(.4, 0, .2, 1);
+  -o-transition: all .1s cubic-bezier(.4, 0, .2, 1);
+}
+
+.loginBtn:active {
+  background-color: #f3f4f6;
+  box-shadow: -1px 2px 5px rgba(81,41,10,0.15),0px 1px 1px rgba(81,41,10,0.15);
+  transform: translateY(0.125rem);
+}
+
+.loginBtn:focus {
+  box-shadow: rgba(72, 35, 7, .46) 0 0 0 4px,
+   -6px 8px 10px rgba(81,41,10,0.1),
+    0px 2px 2px rgba(81,41,10,0.2);
+}

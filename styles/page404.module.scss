@@ -1,0 +1,97 @@
+
+
+.forOFourContainer{
+    height: 80vh;
+}
+
+.mainText{
+    color: var(--navy);
+    font-size: 12rem;
+    line-height: 14rem;
+    letter-spacing: 1rem;
+    font-weight: bold;
+
+    span{
+        // text-shadow: .1em .1em 0 var(--light2);
+        text-shadow: -15px 5px 20px rgba(46, 196, 222, 0.4);
+        animation: sky 5s linear infinite;
+        -webkit-animation: sky 5s linear infinite;
+    }
+}
+
+.errorText{
+    color: var(--navy);
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+.letterOne{
+    animation-delay: 1s !important;
+}
+
+.letterThree{
+    animation-delay: 2s !important;
+}
+
+@keyframes sky {
+    0%, 100% {
+        transform: translateY(0) rotateZ(0);
+    }
+    25% {
+        transform: translateY(25px) rotateZ(5deg);
+    }
+    50% {
+        transform: translateY(50px) rotateZ(-5deg);
+    }
+}
+
+/* CSS */
+.homeBtn {
+    background-color: initial;
+    background-color: var(--navy);
+    border-radius: 5px;
+    border-style: none;
+    border: solid 2px var(--pink);
+    box-shadow: rgba(245, 244, 247, .25) 0 1px 1px inset;
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+    display: inline-block;
+    font-family: Inter, sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    height: 60px;
+    line-height: 60px;
+    margin-left: -4px;
+    outline: 0;
+    text-align: center;
+    transition: all .3s cubic-bezier(.05, .03, .35, 1);
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    vertical-align: bottom;
+    width: 190px;
+}
+
+.homeBtn:hover {
+    color: white;
+    font-weight: bold;
+    border: solid 2px var(--yellow);
+}
+
+@media screen and (max-width: 768px) {
+    .mainText{
+        font-size: 6rem;
+    }
+
+    .errorText{
+        font-size: 1.3rem;
+    }
+
+    .homeBtn {
+        font-size: 14px;
+        height: 40px;
+        line-height: 34px;
+        width: 120px;
+    }
+}

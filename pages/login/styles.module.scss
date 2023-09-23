@@ -1,0 +1,75 @@
+
+
+.formBox{
+    // width: 50%;
+    border: solid 2px rgba(34, 47, 62, 0.2);
+    a{
+        text-decoration: none;
+    }
+    border-radius: 11px;
+    -webkit-border-radius: 11px;
+    -moz-border-radius: 11px;
+    -ms-border-radius: 11px;
+    -o-border-radius: 11px;
+}
+
+.signInButton{
+    border: solid 1px var(--yellow);
+    outline: none;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -ms-border-radius: 5px;
+    -o-border-radius: 5px;
+}
+
+.inputRow{
+
+
+    .textInput::placeholder{
+        color: var(--light);
+    }
+}
+
+.submitBtn {
+    color: var(--navy);
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 2px solid var(--navy);
+    padding: 8px 40px;
+    font-size: 17px;
+    font-weight: bold;
+    background: transparent;
+    position: relative;
+    transition: all 0.7s;
+    overflow: hidden;
+    -webkit-transition: all 0.7s;
+    -moz-transition: all 0.7s;
+    -ms-transition: all 0.7s;
+    -o-transition: all 0.7s;
+}
+  
+  .submitBtn:hover {
+    color: var(--light);
+  }
+  
+  .submitBtn::before {
+    content: '';
+    position: absolute;
+    height: 100%;
+    width: 0%;
+    top: 0;
+    left: -40px;
+    transform: skewX(45deg);
+    background-color: var(--navy);
+    z-index: -1;
+    transition: all 0.5s;
+    -webkit-transition: all 0.5s;
+    -moz-transition: all 0.5s;
+    -ms-transition: all 0.5s;
+    -o-transition: all 0.5s;
+}
+  
+  .submitBtn:hover::before {
+    width: 180%;
+  }
