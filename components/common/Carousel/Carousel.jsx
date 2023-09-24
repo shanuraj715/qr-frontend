@@ -12,7 +12,7 @@ function Carousel() {
     <div className="carousel slide " data-bs-ride="carousel">
         <div className="carousel-inner">
             {carouselData.map((item, i) => {
-                return <div className={`carousel-item ${i === 0 ? 'active' : ''}`} data-bs-interval="2000">
+                return <div className={`carousel-item ${i === 0 ? 'active' : ''}`} data-bs-interval="3000" key={i}>
                 <div className={`${styles.dataContainer}`}>
                     <div className={`${styles.center} d-flex justify-content-center align-items-center `}>
                         <div>
