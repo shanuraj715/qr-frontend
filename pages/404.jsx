@@ -1,5 +1,4 @@
 import React from 'react'
-import _img from '@/assets/app/404.svg'
 import Link from 'next/link'
 import styles from '@/styles/page404.module.scss'
 import Head from 'next/head'
