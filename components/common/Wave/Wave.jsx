@@ -2,15 +2,16 @@ import React from 'react'
 import styles from './styles.module.scss'
 import MySvg from './Svg'
 
-function Wave() {
+function Wave({children}) {
 
-
-    
-
-
-  return <div className={styles.svgContainer}>
+  return <>
+  <div className={styles.svgContainer}>
+    <div className="pt-4">
+        {children}
+    </div>
     <MySvg />
   </div>
+  </>
 }
 
 export default Wave
