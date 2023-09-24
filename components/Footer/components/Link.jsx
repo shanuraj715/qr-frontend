@@ -11,7 +11,7 @@ function FooterLink(props) {
         to = "#",
         external = false,
         classes = '',
-        divider = false
+        divider = false,
     } = props
 
   return divider ? <hr className={`${styles.divider}`} /> :
