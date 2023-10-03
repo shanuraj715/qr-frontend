@@ -12,6 +12,7 @@ function Home() {
         <Carousel />
       </Wave>
       <div className="mt-4">
+        Homepage
 
       </div>
     </>

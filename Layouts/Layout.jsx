@@ -2,9 +2,9 @@ import React from 'react'
 import Header from '@/components/Header/Header'
 import Footer from '@/components/Footer/Footer'
 
-function FullWidth(props) {
+function Layout(props) {
 
-  return (
+  return props.children.type.layout !== 'blank' ? 
     <>
     <Header />
       <div className={`${props.children.type.layout === 'full-width' ? '' : 'container '} mt-5 pt-2 overflow-hidden`}>
@@ -13,7 +13,7 @@ function FullWidth(props) {
       </div>
       <Footer />
     </>
-  )
+  : props.children
 }
 
-export default FullWidth
+export default Layout
