@@ -59,7 +59,7 @@ function Login() {
                             </Link>
                         </div>
                         <div className={`${styles.submitBtnContainer} mt-3 pb-1`}>
-                            <button className={styles.submitBtn}>
+                            <button className={"submitBtn"}>
                                 Login
                             </button>
                         </div>
