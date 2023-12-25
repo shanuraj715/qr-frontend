@@ -8,5 +8,5 @@ export const APP_LOGO_SQUARE = logo_square.src
 export const APP_URL = 'http://localhost:3000'
 export const DASHBOARD_URL = "https://dashboard.myqr.com"
 
-export const API_URL = 'http://localhost:3000'
+export const API_URL = 'http://192.168.1.7:3000'
 

@@ -12,7 +12,7 @@ const socialData = {
         icon: <Whatsapp />,
         primaryColor: '',
         secondaryColor: '',
-        tooltip: '',
+        tooltip: 'Chat with us on WhatsApp.',
         url: ''
     },
     'instagram': {
@@ -26,7 +26,7 @@ const socialData = {
         icon: <Github />,
         primaryColor: '',
         secondaryColor: '',
-        tooltip: '',
+        tooltip: 'Visit our GitHub profile.',
         url: ''
     },
     'twitter': {

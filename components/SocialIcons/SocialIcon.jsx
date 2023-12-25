@@ -16,7 +16,7 @@ function SocialIcons(props) {
   return iconFor && socialData[iconFor] && <>
     <span
 		className={`${styles.socialIcon} ${styles[iconFor]}`}
-		{...tooltip(data.tooltip, 'light')}
+		{...(data.tooltip ? tooltip(data.tooltip, 'light') : {})}
 	>
 		{data.icon}
     </span>
