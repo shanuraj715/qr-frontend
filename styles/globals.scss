@@ -17,6 +17,9 @@
 
   --red-light: rgba(231, 76, 60,1.0);
   --red-dark: rgba(192, 57, 43,1.0);
+
+  --primary-light: #3498db;
+  --primary-dark: #2980b9;
 }
 
 * {
@@ -186,4 +189,27 @@ hr{
 
 .errorBorder{
   border: solid 1px var(--red-dark);
+}
+
+.btn{
+  cursor: pointer;
+}
+
+.btn-primary,
+.btn-secondary,
+.btn-warning,
+.btn-danger,
+.btn-default,
+.btn-success,
+.btn-outline-danger{
+  padding: 0.4rem 1.9rem;
+}
+
+.btn-primary{
+  background-color: var(--primary-light);
+  border: solid 1px var(--navy);
+
+  &:hover{
+    background-color: var(--primary-dark);
+  }
 }

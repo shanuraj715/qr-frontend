@@ -1,0 +1,9 @@
+
+.otpInput{
+    letter-spacing: 4px;
+
+    &::placeholder{
+        letter-spacing: initial;
+        font-size: initial;
+    }
+}
