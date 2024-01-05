@@ -178,3 +178,12 @@ hr{
 .submitBtn:hover::before {
   width: 180%;
 }
+
+.form-control:focus{
+  box-shadow: none !important;
+  border: 1px solid #ced4da !important;
+}
+
+.errorBorder{
+  border: solid 1px var(--red-dark);
+}

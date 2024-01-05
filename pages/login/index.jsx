@@ -10,10 +10,10 @@ import { Eye, EyeSlash } from 'react-bootstrap-icons'
 import { NextSeo } from 'next-seo'
 import seoData from '@/utils/seoData'
 
-function Login() {
+function Login(props) {
   return (
     <>
-        <NextSeo {...seoData.login} />
+        <NextSeo {...props.pageMeta} />
         <div className={`${styles.formContainer} my-5 d-flex flex-column justify-content-center align-items-center `}>
             <h2 className="page-title">Login</h2>
             <div className={`d-flex gap-4 ${styles.formBox} py-4 px-3 px-md-5 mt-3`}>
@@ -68,7 +68,7 @@ function Login() {
 
                         <div className={styles.createAccount}>
                             <p className={`${styles.createAccText} p-0 m-0`}>
-                                Don't have an account? <Link href="/register">Create Account</Link>
+                                Don't have an account? <Link href="/register" className='text-decoration-underline'>Create Account</Link>
                             </p>
                         </div>
                     </div>
@@ -77,6 +77,17 @@ function Login() {
         </div>
     </>
   )
+}
+
+export async function getServerSideProps(){
+    const pageMeta = {
+        ...seoData.login
+    }
+    return {
+        props: {
+            pageMeta
+        }
+    }
 }
 
 Login.layout = "full-width"
