@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useRef, useState } from 'react'
 import dynamic from 'next/dynamic';
 import styles from '../login/styles.module.scss'
 import { APP_LOGO_SQUARE } from '@/constants'
@@ -13,12 +13,10 @@ import allCountries from 'all-country-data'
 import { toaster } from '../../utils/toaster'
 import axios from 'axios'
 import { USER_REGISTER } from '@/utils/endpoints'
-import Alert from '@/components/Alert/Alert'
-import { Container, Row, Col, Form } from 'react-bootstrap'
 const ReCAPTCHA = dynamic(() => import("react-google-recaptcha"), { ssr: false});
-const Modal = dynamic(() => import('@/components/Modal/Modal'), { ssr: false });
 
 import VerifyAccount from '@/components/VerifyAccount/Index'
+import Loader from '@/components/Loader/Index'
 
 function Register(props) {
 
@@ -37,6 +35,10 @@ function Register(props) {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false)
     const [isVerified, setVerified] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false)
+
+    const [isSubmitting, setIsSubmitting] = useState(false)
+
+    const otpToken = useRef(null)
 
     const handleRecaptchaChange = (value) => {
         // This function will be called when reCAPTCHA is verified
@@ -116,6 +118,7 @@ function Register(props) {
             return
         }
         try{
+            setIsSubmitting(true)
             const payload = {
                 firstName: formData.firstName,
                 lastName: formData.lastName,
@@ -128,6 +131,7 @@ function Register(props) {
             
             if(response.status === 200){
                 toaster.success('Account created successfully.')
+                otpToken.current = response.data.responseData.token
                 setIsModalOpen(true)
             }
         }
@@ -135,19 +139,13 @@ function Register(props) {
             // console.log(err)
             toaster.error(err.response.data.errors[0])
         }
+        finally{
+            setIsSubmitting(false)
+        }
     }, [formData, isVerified])
 
     const togglePasswordVisibility = useCallback(() => {
         setIsPasswordVisible(prev => !prev)
-    }, [])
-
-    const verifyOTP = useCallback(() => {
-
-    }, [])
-
-    const closeVerifyAccountModal = useCallback(() => {
-        console.log("HELLO")
-        setIsModalOpen(prev => !prev)
     }, [])
 
   return (
@@ -226,7 +224,8 @@ function Register(props) {
                 </div>
             </div>
         </div>
-        <VerifyAccount isModalOpen={isModalOpen} email={formData.email} />
+        {isSubmitting && <Loader />}
+        <VerifyAccount isModalOpen={isModalOpen} email={formData.email} token={otpToken.current} />
         
     </>
   )

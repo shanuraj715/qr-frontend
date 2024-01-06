@@ -5,10 +5,11 @@ import styles from './styles.module.scss'
 const MyAlert = props => {
 
     const {
-        variant = 'primary'
+        variant = 'primary',
+        className = ''
     } = props
 
-    return <Alert variant={variant} className={styles.alert}>
+    return <Alert variant={variant} className={`${styles.alert} ${className}`}>
         {props.children}
     </Alert>
 }

@@ -5,10 +5,12 @@ const MyButton = (props) => {
 
     const {
         variant = 'primary',
-        onClick = () => {}
+        onClick = () => {},
+        className = '',
+        disabled = false,
     } = props
 
-    return <Button variant={variant} onClick={onClick}>{props.children}</Button>
+    return <Button variant={variant} onClick={onClick} className={className} disabled={disabled}>{props.children}</Button>
 }
 
 export default MyButton

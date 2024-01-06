@@ -1,9 +1,26 @@
 
 .otpInput{
-    letter-spacing: 4px;
+    letter-spacing: 14px;
+    background-color: #57606f;
+    border: none;
+    outline: none;
+    width: 100%;
+    padding: 3px 15px;
+    border-radius: 7px;
+    text-align: center;
+    font-size: 1.3rem;
+    color: white;
+
+    &:hover, &:focus{
+        background-color: #57606f;
+        border: none;
+        outline: none;
+    }
 
     &::placeholder{
         letter-spacing: initial;
         font-size: initial;
+        color: #ddd;
+        text-align: center;
     }
 }
