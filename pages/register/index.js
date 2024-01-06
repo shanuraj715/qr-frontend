@@ -1,21 +1,24 @@
 /* eslint-disable react/no-unescaped-entities */
 
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useRef, useState } from 'react'
+import dynamic from 'next/dynamic';
 import styles from '../login/styles.module.scss'
 import { APP_LOGO_SQUARE } from '@/constants'
 import Image from 'next/image'
-import googleIcon from '@/assets/app/google.svg'
 import Link from 'next/link'
 import { Eye, EyeSlash } from 'react-bootstrap-icons'
 import { NextSeo } from 'next-seo'
 import seoData from '@/utils/seoData'
-import allCountries, { all, count } from 'all-country-data'
+import allCountries from 'all-country-data'
 import { toaster } from '../../utils/toaster'
 import axios from 'axios'
 import { USER_REGISTER } from '@/utils/endpoints'
-import ReCAPTCHA from "react-google-recaptcha";
+const ReCAPTCHA = dynamic(() => import("react-google-recaptcha"), { ssr: false});
 
-function Login(props) {
+import VerifyAccount from '@/components/VerifyAccount/Index'
+import Loader from '@/components/Loader/Index'
+
+function Register(props) {
 
     const [formData, setFormData] = React.useState({
         firstName: '',
@@ -31,14 +34,16 @@ function Login(props) {
     const [error, setError] = React.useState(null)
     const [isPasswordVisible, setIsPasswordVisible] = useState(false)
     const [isVerified, setVerified] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false)
+
+    const [isSubmitting, setIsSubmitting] = useState(false)
+
+    const otpToken = useRef(null)
 
     const handleRecaptchaChange = (value) => {
-        console.log(value)
         // This function will be called when reCAPTCHA is verified
         setVerified(true);
       };
-
-    // console.log(allCountries.all())
 
     const updateForm = React.useCallback((e) => {
         const key = e.target.ariaLabel;
@@ -113,6 +118,7 @@ function Login(props) {
             return
         }
         try{
+            setIsSubmitting(true)
             const payload = {
                 firstName: formData.firstName,
                 lastName: formData.lastName,
@@ -122,18 +128,25 @@ function Login(props) {
                 password: formData.password
             }
             const response = await axios.post(USER_REGISTER, payload)
-            console.log(response)
+            
+            if(response.status === 200){
+                toaster.success('Account created successfully.')
+                otpToken.current = response.data.responseData.token
+                setIsModalOpen(true)
+            }
         }
         catch(err){
-
+            // console.log(err)
+            toaster.error(err.response.data.errors[0])
+        }
+        finally{
+            setIsSubmitting(false)
         }
     }, [formData, isVerified])
 
     const togglePasswordVisibility = useCallback(() => {
         setIsPasswordVisible(prev => !prev)
     }, [])
-
-    console.log(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY)
 
   return (
     <>
@@ -171,7 +184,7 @@ function Login(props) {
                             
                         <input type="text" className={`form-control ${error === 'username' ? 'errorBorder' : ''}`} placeholder="Username" aria-label="username" onChange={updateForm} value={formData.username} />
                             <div className={`form-control d-flex gap-2 align-items-center ${error === 'country' ? 'errorBorder' : ''}`}>
-                                <Image src={formData.flag} alt={''} width={20} height={15} />
+                                {formData.flag && <Image src={formData.flag} alt={''} width={20} height={15} />}
                                 <select className={` w-100 ${styles.customSelect}`} aria-label='country' onChange={updateForm}>
                                     <option hidden selected>Select Country</option>
                                     {allCountries.all().map(item => <option key={item.country} value={item.country}>{item.country}</option>)}
@@ -183,19 +196,10 @@ function Login(props) {
                             <div className={`form-control d-flex gap-2 ${error === 'confirmPassword' ? 'errorBorder' : ''}`}>
                                 <input type={isPasswordVisible ? 'text' : 'password'}className={`w-100 border-0 ${styles.customSelect}`} placeholder="Confirm Password" aria-label="confirmPassword" value={formData.confirmPassword} onChange={updateForm} />
                                 <span className="" onClick={togglePasswordVisibility}>
-                                    <EyeSlash />
+                                    {isPasswordVisible ? <EyeSlash /> : <Eye />}
                                 </span>
                             </div>
                         </div>
-                        {/* <div className={`d-flex justify-content-between mt-2 borderLight px-2 py-1`}>
-                            <div className={`${styles.rememberMeContainer} d-flex gap-2`}>
-                                <input type='checkbox' id="rememberMe" />
-                                <label htmlFor="rememberMe" >Remember Me</label>
-                            </div>
-                            <Link href="/reset-password">
-                                Forgot Password?
-                            </Link>
-                        </div> */}
                         <div className="d-flex justify-content-between align-items-end mt-3 pb-1 flex-column flex-sm-row gap-3">
                             <ReCAPTCHA
                                 sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
@@ -220,6 +224,9 @@ function Login(props) {
                 </div>
             </div>
         </div>
+        {isSubmitting && <Loader />}
+        <VerifyAccount isModalOpen={isModalOpen} email={formData.email} token={otpToken.current} />
+        
     </>
   )
 }
@@ -235,6 +242,6 @@ export async function getServerSideProps(){
     }
 }
 
-Login.layout = "full-width"
+Register.layout = "full-width"
 
-export default Login
+export default Register
