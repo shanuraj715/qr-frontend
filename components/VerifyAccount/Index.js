@@ -12,7 +12,7 @@ import { useRouter } from "next/router";
 
 const VerifyAccount = (props) => {
   const router = useRouter()
-  const { isModalOpen, closeVerifyAccountModal, email = "", token = '' } = props;
+  const { isModalOpen, closeVerifyAccountModal, email = "", token = '', successCallback } = props;
 
   const [value, setValue] = useState('')
   const [isVerifying, setIsVerifying] = useState(false)
@@ -72,6 +72,7 @@ const VerifyAccount = (props) => {
       const response = await postRequest(USER_ACCOUNT_OTP_VERIFY, payload)
       if(response.status === 200){
         toaster.success("Account verified successfully.")
+        successCallback?.()
         router.replace('/login')
       }
     }

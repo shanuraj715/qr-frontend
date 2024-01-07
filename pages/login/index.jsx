@@ -1,16 +1,122 @@
 /* eslint-disable react/no-unescaped-entities */
 
-import React from 'react'
+import React, { useCallback, useState, useEffect, useRef } from 'react'
 import styles from './styles.module.scss'
 import { APP_LOGO_SQUARE } from '@/constants'
 import Image from 'next/image'
-import googleIcon from '@/assets/app/google.svg'
+import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { Eye, EyeSlash } from 'react-bootstrap-icons'
 import { NextSeo } from 'next-seo'
 import seoData from '@/utils/seoData'
+import { toaster } from '@/utils/toaster'
+import { postRequest } from '@/utils/request'
+import { USER_LOGIN, USER_LOGIN_CHECK } from '@/utils/endpoints'
+import { getItem, setItem, removeItem } from '@/utils/localstorage'
+import { useUser } from '@/context/user'
+import VerifyAccount from '@/components/VerifyAccount/Index'
 
 function Login(props) {
+
+    const { updateUser, user } = useUser()
+    const router = useRouter()
+
+    const [formData, setFormData] = useState({
+        email: '',
+        password: '',
+        isRememberDetailsChecked: true
+    })
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false)
+    const [isModalOpen, setIsModalOpen] = useState(false)
+
+    const otpToken = useRef(null)
+
+    const onLoginSuccess = (responseData) => {
+        const { username, email, firstName, lastName, profilePicture } = responseData
+        updateUser({
+            isLoggedIn: true,
+            username,
+            email,
+            firstName,
+            lastName,
+            profilePicture
+        })
+        toaster.success('User logged in successfully')
+        router.replace('/')
+    }
+
+    const updateFormData = useCallback(e => {
+        const key = e.target.ariaLabel
+        const value = key === 'isRememberDetailsChecked' ? e.target.checked : e.target.value
+
+        setFormData(prev => ({
+            ...prev,
+            [key]: value
+        }))
+    }, [])
+
+    const togglePasswordVisibility = useCallback(() => {
+        setIsPasswordVisible(prev => !prev)
+    }, [])
+
+    useEffect(() => {
+        const formDataFromLocalstorage = getItem('loginCred')
+        if(!formDataFromLocalstorage){
+            return
+        }
+        const { email, password } = formDataFromLocalstorage
+
+        setFormData({
+            ...formData,
+            email,
+            password
+        })
+    }, [])
+
+    const sendRequest = useCallback(async () => {
+        const { email, password } = formData
+        if(formData.isRememberDetailsChecked){
+            setItem('loginCred', { email, password })
+        }
+        else{
+            removeItem('loginCred')
+        }
+        if(!/^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/.test(email)){
+            toaster.error('Invalid email address');
+            return
+        }
+        if(password.length < 8 || password.length > 32){
+            toaster.error("Password length must be between 8 to 32 charaters")
+            return
+        }
+
+        const payload = {
+            email, password
+        }
+        try{
+            const resp = await postRequest(USER_LOGIN, payload)
+            if(resp.data.statusCode === 200){
+                onLoginSuccess(resp.data.responseData)
+            }
+            if(resp.data.statusCode === 401){
+                otpToken.current = resp.data.responseData.token
+                setIsModalOpen(true)
+            }
+        }
+        catch(err){
+            toaster.error(err.message)
+        }
+    }, [formData])
+
+    const onAcountActivateCallback = () => {
+        setIsModalOpen(false)
+        sendRequest()
+    }
+
+    if(user.isLoggedIn){
+        router.replace('/')
+    }
+
   return (
     <>
         <NextSeo {...props.pageMeta} />
@@ -41,17 +147,17 @@ function Login(props) {
 
                     <div className={`${styles.form} pt-1`}>
                         <div className="input-group my-3">
-                            <input type="text" className="form-control" placeholder="Email address" aria-label="email" />
+                            <input type="text" className="form-control" placeholder="Email address" aria-label="email" value={formData.email} onChange={updateFormData} />
                         </div>
                         <div className="input-group my-3">
-                            <input type="text" className="form-control" placeholder="Password" aria-label="password" />
-                            <span className="input-group-text" id="basic-addon1">
-                                <EyeSlash />
+                            <input type={isPasswordVisible ? 'text' : "password"} className="form-control" placeholder="Password" aria-label="password" value={formData.password} onChange={updateFormData} />
+                            <span className="input-group-text" onClick={togglePasswordVisibility}>
+                                {isPasswordVisible ? <EyeSlash /> : <Eye />}
                             </span>
                         </div>
                         <div className={`d-flex justify-content-between mt-2 borderLight px-2 py-1`}>
                             <div className={`${styles.rememberMeContainer} d-flex gap-2`}>
-                                <input type='checkbox' id="rememberMe" />
+                                <input type='checkbox' id="rememberMe" onChange={updateFormData} aria-label='isRememberDetailsChecked' checked={formData.isRememberDetailsChecked} />
                                 <label htmlFor="rememberMe" >Remember Me</label>
                             </div>
                             <Link href="/reset-password">
@@ -59,7 +165,7 @@ function Login(props) {
                             </Link>
                         </div>
                         <div className={`${styles.submitBtnContainer} mt-3 pb-1`}>
-                            <button className={"submitBtn"}>
+                            <button className={"submitBtn"} onClick={sendRequest}>
                                 Login
                             </button>
                         </div>
@@ -75,6 +181,7 @@ function Login(props) {
                 </div>
             </div>
         </div>
+        <VerifyAccount isModalOpen={isModalOpen} email={formData.email} token={otpToken.current} successCallback={onAcountActivateCallback} />
     </>
   )
 }
