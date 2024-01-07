@@ -3,6 +3,7 @@ import dynamic from "next/dynamic";
 import { Roboto_Slab } from "next/font/google";
 import Layout from "@/Layouts/Layout";
 import { Tooltip } from "react-tooltip";
+import { LoaderProvider } from "@/context/Loader";
 // import { Toaster } from "react-hot-toast";
 const Toaster = dynamic(() => import("react-hot-toast").then(module => module.Toaster), { ssr: false });
 
@@ -12,9 +13,11 @@ export default function App({ Component, pageProps }) {
   return (
     <>
       <div className={`${roboto_slab.className}`}>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
+        <LoaderProvider>
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </LoaderProvider>
       </div>
       <Tooltip id="my-tooltip-data-html" />
       <Toaster
