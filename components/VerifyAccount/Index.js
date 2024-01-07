@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback, useState, useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 import Alert from "@/components/Alert/Alert";
 import { Row, Col } from "react-bootstrap";
@@ -7,7 +7,7 @@ import styles from "./styles.module.scss";
 import axios from "axios";
 import Button from '@/components/Buttons/Button'
 import { toaster } from "@/utils/toaster";
-import { USER_ACCOUNT_OTP_VERIFY } from '../../utils/endpoints'
+import { USER_ACCOUNT_OTP_VERIFY, USER_ACCOUNT_OTP_RESEND } from '../../utils/endpoints'
 import { useRouter } from "next/router";
 
 const VerifyAccount = (props) => {
@@ -16,6 +16,47 @@ const VerifyAccount = (props) => {
 
   const [value, setValue] = useState('')
   const [isVerifying, setIsVerifying] = useState(false)
+  const [resendOtpCounter, setResendOtpCounter] = useState(null)
+
+  const intervalRef = useRef(null)
+
+  const startResendOtpTimer = () => {
+    clearInterval(intervalRef.current)
+    let timer = 10
+    intervalRef.current = setInterval(() => {
+      if(timer !== null && timer <= 0){
+        setResendOtpCounter(null)
+        timer = null
+        clearInterval(intervalRef.current)
+        return
+      }
+      setResendOtpCounter(timer)
+      timer--
+    }, 1000)
+  }
+
+  const resendOtp = useCallback(async () => {
+    if(resendOtpCounter !== null) return
+    try{
+      const payload = {
+        token
+      }
+      const response = await axios.post(USER_ACCOUNT_OTP_RESEND, payload)
+      if(response.status === 200){
+        toaster.success("OTP Sent. Check your email.")
+      }
+    }
+    catch(err){
+      toaster.error(err.response.data.errors[0])
+    }
+    finally{
+      startResendOtpTimer()
+    }
+  }, [token])
+
+  useEffect(() => {
+    startResendOtpTimer()
+  }, [])
 
   const verifyOTP = useCallback(async () => {
     if(isVerifying) return
@@ -93,7 +134,8 @@ const VerifyAccount = (props) => {
         </Col>
       </Row>
       <Row>
-        <Col className={'text-center'}>
+        <Col className={'py-2 d-flex gap-3 justify-content-center'}>
+          <Button disabled={resendOtpCounter !== null} className={'py-2 mt-2 mb-4'} variant="outline-secondary" onClick={resendOtp}>Resend {resendOtpCounter === null ? '' : `(${resendOtpCounter})`}</Button>
           <Button onClick={verifyOTP} className={'py-2 mt-2 mb-4'} variant="primary" disabled={isVerifying}>{isVerifying ? "Verifying..." : "Verify!"}</Button>
         </Col>
       </Row>
