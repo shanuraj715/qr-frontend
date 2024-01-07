@@ -11,14 +11,16 @@ import { NextSeo } from 'next-seo'
 import seoData from '@/utils/seoData'
 import allCountries from 'all-country-data'
 import { toaster } from '../../utils/toaster'
-import axios from 'axios'
 import { USER_REGISTER } from '@/utils/endpoints'
 const ReCAPTCHA = dynamic(() => import("react-google-recaptcha"), { ssr: false});
 
 import VerifyAccount from '@/components/VerifyAccount/Index'
-import Loader from '@/components/Loader/Index'
+import { useLoader } from '@/context/Loader';
+import { postRequest } from '@/utils/request';
 
 function Register(props) {
+
+    const { showLoader, hideLoader } = useLoader()
 
     const [formData, setFormData] = React.useState({
         firstName: '',
@@ -35,8 +37,6 @@ function Register(props) {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false)
     const [isVerified, setVerified] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false)
-
-    const [isSubmitting, setIsSubmitting] = useState(false)
 
     const otpToken = useRef(null)
 
@@ -118,7 +118,7 @@ function Register(props) {
             return
         }
         try{
-            setIsSubmitting(true)
+            showLoader()
             const payload = {
                 firstName: formData.firstName,
                 lastName: formData.lastName,
@@ -127,7 +127,7 @@ function Register(props) {
                 country: formData.country,
                 password: formData.password
             }
-            const response = await axios.post(USER_REGISTER, payload)
+            const response = await postRequest(USER_REGISTER, payload)
             
             if(response.status === 200){
                 toaster.success('Account created successfully.')
@@ -136,11 +136,10 @@ function Register(props) {
             }
         }
         catch(err){
-            // console.log(err)
-            toaster.error(err.response.data.errors[0])
+            toaster.error(err.message)
         }
         finally{
-            setIsSubmitting(false)
+            hideLoader()
         }
     }, [formData, isVerified])
 
@@ -224,7 +223,6 @@ function Register(props) {
                 </div>
             </div>
         </div>
-        {isSubmitting && <Loader />}
         <VerifyAccount isModalOpen={isModalOpen} email={formData.email} token={otpToken.current} />
         
     </>

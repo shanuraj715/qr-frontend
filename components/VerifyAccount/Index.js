@@ -4,7 +4,7 @@ import Alert from "@/components/Alert/Alert";
 import { Row, Col } from "react-bootstrap";
 const Modal = dynamic(() => import("@/components/Modal/CustomModal"), { ssr: false });
 import styles from "./styles.module.scss";
-import axios from "axios";
+import { postRequest } from "@/utils/request";
 import Button from '@/components/Buttons/Button'
 import { toaster } from "@/utils/toaster";
 import { USER_ACCOUNT_OTP_VERIFY, USER_ACCOUNT_OTP_RESEND } from '../../utils/endpoints'
@@ -41,13 +41,13 @@ const VerifyAccount = (props) => {
       const payload = {
         token
       }
-      const response = await axios.post(USER_ACCOUNT_OTP_RESEND, payload)
+      const response = await postRequest(USER_ACCOUNT_OTP_RESEND, payload)
       if(response.status === 200){
         toaster.success("OTP Sent. Check your email.")
       }
     }
     catch(err){
-      toaster.error(err.response.data.errors[0])
+      toaster.error(err.message)
     }
     finally{
       startResendOtpTimer()
@@ -69,14 +69,14 @@ const VerifyAccount = (props) => {
         token,
         otp: value
       }
-      const response = await axios.post(USER_ACCOUNT_OTP_VERIFY, payload)
+      const response = await postRequest(USER_ACCOUNT_OTP_VERIFY, payload)
       if(response.status === 200){
         toaster.success("Account verified successfully.")
         router.replace('/login')
       }
     }
     catch(err){
-      return toaster.error(err.response.data.errors[0])
+      return toaster.error(err.message)
     }
     finally{
       setIsVerifying(false)
